@@ -18,14 +18,26 @@ class Background(override val batch: Batch) : GameObject {
     )
 
     override fun draw(delta: Float) {
-        batch.draw(image, rect.x, rect.y, rect.width, rect.height)
-        batch.draw(image, rect.x + CONSTANTS.width, rect.y, rect.width, rect.height)
+        batch.draw(
+                image,
+                rect.x,
+                rect.y,
+                rect.width / CONSTANTS.PTM,
+                rect.height / CONSTANTS.PTM
+        )
+        batch.draw(
+                image,
+                rect.x + CONSTANTS.width / CONSTANTS.PTM,
+                rect.y,
+                rect.width / CONSTANTS.PTM,
+                rect.height / CONSTANTS.PTM
+        )
     }
 
     override fun compute(delta: Float) {
-        rect.x -= 100 * delta
+        rect.x -= 1 * delta
 
-        if (rect.x <= -CONSTANTS.width) {
+        if (rect.x <= -CONSTANTS.width / 48) {
             rect.x = 0f
         }
     }

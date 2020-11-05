@@ -1,5 +1,6 @@
 package com.flappybird.game.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
@@ -8,23 +9,25 @@ import com.flappybird.game.Game
 import com.flappybird.game.objects.Background
 import com.flappybird.game.objects.Bird
 import com.flappybird.game.objects.Pipe
+import com.flappybird.game.utils.GraphicsHelper
 import ktx.app.KtxScreen
 import ktx.graphics.use
 
 
-class GameScreen(val game: Game) : KtxScreen {
+class GameScreen(val game: Game) : KtxScreen, GraphicsHelper {
 
-    private val camera = OrthographicCamera().apply { setToOrtho(false, 800f, 480f) }
+    private val camera = OrthographicCamera().apply {
+        setToOrtho(false, ptm(Gdx.graphics.width), ptm(Gdx.graphics.height))
+    }
 
     private var lastSpawnTimestamp = TimeUtils.nanoTime();
     private val SPAWN_INTERVAL = 2_000_000_000f
 
-    private val background =  Background(game.batch)
     private var collision = false
-
-    private val world = World(Vector2(0f, -600f), false)
+    private val world = World(Vector2(0f, -16f), false)
 
     private val pipes = mutableListOf<Pipe>()
+    private val background =  Background(game.batch)
     private val bird = Bird(game.batch, world)
 
 
@@ -39,8 +42,11 @@ class GameScreen(val game: Game) : KtxScreen {
         camera.update()
         game.batch.projectionMatrix = camera.combined
 
+        debugRenderer.render(world, camera.combined);
+//        return
+
         game.batch.use { batch ->
-            background.draw(delta)
+//            background.draw(delta)
             pipes.forEach { it.draw(delta) }
             bird.draw(delta)
             game.font.draw(batch, "Collision: $collision", 0f, 400f)
