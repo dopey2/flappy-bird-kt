@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.flappybird.game.res.CONSTANTS
 import com.flappybird.game.utils.GameObject
+import com.flappybird.game.utils.GraphicsHelper
 
-class Background(override val batch: Batch) : GameObject {
+class Background(override val batch: Batch) : GameObject, GraphicsHelper {
 
     private val image = Texture(Gdx.files.internal("images/background.png"))
 
@@ -23,22 +24,22 @@ class Background(override val batch: Batch) : GameObject {
                 image,
                 rect.x,
                 rect.y,
-                rect.width / CONSTANTS.PTM,
-                rect.height / CONSTANTS.PTM
+                ptm(rect.width),
+                ptm(rect.height)
         )
         batch.draw(
                 image,
-                rect.x + CONSTANTS.width / CONSTANTS.PTM,
+                rect.x + ptm(CONSTANTS.width),
                 rect.y,
-                rect.width / CONSTANTS.PTM,
-                rect.height / CONSTANTS.PTM
+                ptm(rect.width),
+                ptm(rect.height)
         )
     }
 
     fun compute(delta: Float) {
         rect.x -= 1 * delta
 
-        if (rect.x <= -CONSTANTS.width / 48) {
+        if (rect.x <= ptm(-CONSTANTS.width)) {
             rect.x = 0f
         }
     }
