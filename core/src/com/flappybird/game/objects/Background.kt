@@ -20,20 +20,15 @@ class Background(override val batch: Batch) : GameObject, GraphicsHelper {
     )
 
     override fun draw(delta: Float) {
-        batch.draw(
-                image,
-                rect.x,
-                rect.y,
-                ptm(rect.width),
-                ptm(rect.height)
-        )
-        batch.draw(
-                image,
-                rect.x + ptm(CONSTANTS.width),
-                rect.y,
-                ptm(rect.width),
-                ptm(rect.height)
-        )
+        for(i in 0..1){
+            batch.draw(
+                    image,
+                    rect.x + i * ptm(CONSTANTS.width),
+                    rect.y,
+                    ptm(rect.width),
+                    ptm(rect.height)
+            )
+        }
     }
 
     fun compute(delta: Float) {
