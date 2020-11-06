@@ -1,12 +1,11 @@
 package com.flappybird.game.objects
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.utils.TimeUtils
+import com.flappybird.game.utils.GameObject
 import com.flappybird.game.utils.GraphicsHelper
 
 class Bird: GameObject, GraphicsHelper {
@@ -23,15 +22,12 @@ class Bird: GameObject, GraphicsHelper {
     private val body: Body
     private val fdef: FixtureDef
 
-    private var lastClickTimeStamp = 0L
-
-
     constructor(batch: Batch, world: World) {
         this.batch = batch
         this.world = world
 
-        val x = 240f
-        val y = 100f
+        val y = 240f - height / 2
+        val x = 400f - width
 
         bodyDef = BodyDef().apply {
             type = BodyDef.BodyType.DynamicBody
@@ -61,13 +57,11 @@ class Bird: GameObject, GraphicsHelper {
         )
     }
 
-    override fun compute(delta: Float) {
-        if(
-                Gdx.input.isKeyJustPressed(Input.Keys.SPACE) &&
-                lastClickTimeStamp + 100_000_000 < TimeUtils.nanoTime()
-        ) {
-            body.applyLinearImpulse(Vector2(0f, 4f ), body.worldCenter, false)
-            lastClickTimeStamp = TimeUtils.nanoTime()
-        }
+    fun jump() {
+        body.applyLinearImpulse(Vector2(0f, 4f ), body.worldCenter, false)
+    }
+
+    override fun dispose() {
+        world.destroyBody(body)
     }
 }

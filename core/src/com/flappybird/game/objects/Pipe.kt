@@ -3,15 +3,16 @@ package com.flappybird.game.objects
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.*
 import com.flappybird.game.res.CONSTANTS
+import com.flappybird.game.utils.GameObject
 import com.flappybird.game.utils.GraphicsHelper
 
 class Pipe : GameObject, GraphicsHelper {
 
     override val batch: Batch
+
+    private val world: World
 
     private val pipeUpImage = Texture(Gdx.files.internal("images/pipeup.png"))
     private val pipeDownImage = Texture(Gdx.files.internal("images/pipedown.png"))
@@ -22,17 +23,15 @@ class Pipe : GameObject, GraphicsHelper {
     private val pipeUpBody: Body
     private val pipeDownBody: Body
 
-
-    constructor(batch: Batch, world: World) {
+    constructor(batch: Batch, world: World, randomY: Float) {
         this.batch = batch
-
-        val randomY = MathUtils.random(-CONSTANTS.height / 2 + 100, CONSTANTS.height / 2 - 100)
+        this.world = world
 
         val pipeUpBodyDef = BodyDef().apply {
             type = BodyDef.BodyType.KinematicBody
             position.set(
                     ptm(CONSTANTS.width + pipeWidth / 2),
-                    ptm(0f - 50 + randomY)
+                    ptm(0f - 70 + randomY)
             )
         }
 
@@ -40,12 +39,13 @@ class Pipe : GameObject, GraphicsHelper {
             type = BodyDef.BodyType.KinematicBody
             position.set(
                     ptm(CONSTANTS.width + pipeWidth / 2),
-                    ptm(pipeHeight + 50 + randomY)
+                    ptm(pipeHeight + 70 + randomY)
             )
         }
 
         pipeUpBody = world.createBody(pipeUpBodyDef)
         pipeDownBody = world.createBody(pipeDownBodyDef)
+
 
         val fixtureDef = FixtureDef()
         fixtureDef.shape = PolygonShape().apply {
@@ -79,13 +79,12 @@ class Pipe : GameObject, GraphicsHelper {
         )
     }
 
-    override fun compute(delta: Float) {
-
+    override fun dispose() {
+        world.destroyBody(pipeDownBody)
+        world.destroyBody(pipeUpBody)
     }
 
-    fun overlaps(target: Rectangle): Boolean {
-        //return Rectangle(pipeDownBody.position.x, pipeDownBody.position.y, 45f, CONSTANTS.height).
-        //return rectPipeDown.overlaps(target) || rectPipeUp.overlaps(target)
-        return false
+    fun isOutOfScreen(): Boolean {
+        return pipeDownBody.position.x < -ptm(pipeWidth)
     }
 }

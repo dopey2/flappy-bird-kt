@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.flappybird.game.res.CONSTANTS
+import com.flappybird.game.utils.GameObject
 
 class Background(override val batch: Batch) : GameObject {
 
@@ -34,7 +35,7 @@ class Background(override val batch: Batch) : GameObject {
         )
     }
 
-    override fun compute(delta: Float) {
+    fun compute(delta: Float) {
         rect.x -= 1 * delta
 
         if (rect.x <= -CONSTANTS.width / 48) {
